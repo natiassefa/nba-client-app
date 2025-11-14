@@ -25,9 +25,10 @@ A modern Next.js web application for viewing NBA game schedules, scores, and rea
 
 ## Prerequisites
 
-- Node.js 18+ 
-- pnpm (or npm/yarn)
-- NBA API Service running (see [nba-api-service](../nba-api-service/README.md))
+- **Node.js** 20+ (or 18+)
+- **pnpm** (or npm/yarn)
+- **NBA API Service** running (see [nba-api-service](../nba-api-service/README.md))
+
 
 ## Installation
 
