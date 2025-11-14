@@ -1,26 +1,102 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* iOS/macOS system colors */
+  --color-ios-blue: #007AFF;
+  --color-ios-green: #34C759;
+  --color-ios-indigo: #5856D6;
+  --color-ios-orange: #FF9500;
+  --color-ios-pink: #FF2D55;
+  --color-ios-purple: #AF52DE;
+  --color-ios-red: #FF3B30;
+  --color-ios-teal: #5AC8FA;
+  --color-ios-yellow: #FFCC00;
+  
+  /* System grays */
+  --color-system-gray-1: #8E8E93;
+  --color-system-gray-2: #AEAEB2;
+  --color-system-gray-3: #C7C7CC;
+  --color-system-gray-4: #D1D1D6;
+  --color-system-gray-5: #E5E5EA;
+  --color-system-gray-6: #F2F2F7;
+  
+  /* Font family */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  
+  /* Border radius */
+  --radius-ios: 12px;
+  --radius-ios-lg: 16px;
+  
+  /* Shadows */
+  --shadow-ios: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-ios-lg: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    background-color: var(--color-system-gray-6);
+    color: rgb(17, 24, 39);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .card {
+    background-color: white;
+    border-radius: var(--radius-ios);
+    box-shadow: var(--shadow-ios);
+    padding: 1rem;
+  }
+
+  .card-interactive {
+    background-color: white;
+    border-radius: var(--radius-ios);
+    box-shadow: var(--shadow-ios);
+    padding: 1rem;
+    transition: all 200ms;
+  }
+
+  .card-interactive:hover {
+    box-shadow: var(--shadow-ios-lg);
+  }
+
+  .card-interactive:active {
+    transform: scale(0.98);
+  }
+
+  .button-primary {
+    background-color: var(--color-ios-blue);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-ios);
+    font-weight: 500;
+    transition: all 200ms;
+  }
+
+  .button-primary:hover {
+    opacity: 0.9;
+  }
+
+  .button-primary:active {
+    transform: scale(0.98);
+  }
+
+  .button-secondary {
+    background-color: var(--color-system-gray-5);
+    color: rgb(17, 24, 39);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-ios);
+    font-weight: 500;
+    transition: all 200ms;
+  }
+
+  .button-secondary:hover {
+    background-color: var(--color-system-gray-4);
+  }
+
+  .button-secondary:active {
+    transform: scale(0.98);
+  }
 }
