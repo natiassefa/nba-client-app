@@ -1,36 +1,172 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NBA Client App
 
-## Getting Started
+A modern Next.js web application for viewing NBA game schedules, scores, and real-time updates. This client application connects to the NBA API service to display game information and receives live updates via WebSocket connections.
 
-First, run the development server:
+## Features
+
+- 📅 **Schedule View**: Browse NBA games by date with intuitive date navigation
+- 🏀 **Game Details**: View comprehensive game information including:
+  - Game metadata (teams, venue, broadcast info)
+  - Live scores and game status
+  - Play-by-play events
+  - Player statistics
+- 🔄 **Real-time Updates**: WebSocket integration for live game updates
+- 📱 **Responsive Design**: Modern UI built with Tailwind CSS
+- 🔌 **Connection Status**: Visual indicator for WebSocket connection state
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4
+- **State Management**: React Context API
+- **Date Handling**: date-fns
+- **Package Manager**: pnpm
+
+## Prerequisites
+
+- Node.js 18+ 
+- pnpm (or npm/yarn)
+- NBA API Service running (see [nba-api-service](../nba-api-service/README.md))
+
+## Installation
+
+1. Install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Configure environment variables (optional):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env.local` file in the root directory:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3000
+NEXT_PUBLIC_WS_URL=ws://localhost:3000/ws
+```
 
-## Learn More
+If not set, the app defaults to:
+- API URL: `http://localhost:3000`
+- WebSocket URL: `ws://localhost:3000/ws`
 
-To learn more about Next.js, take a look at the following resources:
+## Development
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Start the development server:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+pnpm dev
+```
 
-## Deploy on Vercel
+The app will be available at [http://localhost:3001](http://localhost:3001)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Available Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `pnpm dev` - Start development server on port 3001
+- `pnpm build` - Build for production
+- `pnpm start` - Start production server on port 3001
+- `pnpm lint` - Run ESLint
+
+## Project Structure
+
+```
+nba-client-app/
+├── app/                    # Next.js App Router pages
+│   ├── page.tsx           # Home page (schedule view)
+│   ├── games/
+│   │   └── [gameId]/      # Dynamic game detail pages
+│   ├── layout.tsx         # Root layout with WebSocket provider
+│   └── globals.css        # Global styles
+├── components/            # React components
+│   ├── ConnectionStatus.tsx    # WebSocket connection indicator
+│   ├── DateNavigation.tsx      # Date picker/navigation
+│   ├── GameCard.tsx            # Game card component
+│   ├── GameDetailView.tsx      # Full game detail view
+│   ├── PlayerStats.tsx         # Player statistics display
+│   ├── ScheduleView.tsx        # Schedule list view
+│   └── TeamLogo.tsx            # Team logo component
+├── contexts/             # React contexts
+│   └── WebSocketContext.tsx    # WebSocket connection management
+├── hooks/                # Custom React hooks
+│   ├── useGameUpdates.ts       # Hook for game update subscriptions
+│   └── useWebSocket.ts         # WebSocket hook (if exists)
+├── lib/                  # Utility functions
+│   ├── api.ts            # API client functions
+│   ├── games.ts          # Game-related utilities
+│   └── teams.ts          # Team-related utilities
+└── types/                # TypeScript type definitions
+    └── api.ts            # API and WebSocket message types
+```
+
+## Key Components
+
+### WebSocketContext
+
+Manages WebSocket connections with automatic reconnection logic:
+- Connection state management
+- Subscribe/unsubscribe to game updates
+- Message listener system
+- Exponential backoff reconnection
+
+### ScheduleView
+
+Displays a list of games for a selected date:
+- Fetches schedule from API
+- Shows game cards with team info and status
+- Links to individual game detail pages
+
+### GameDetailView
+
+Comprehensive game detail page showing:
+- Game metadata (teams, venue, broadcast)
+- Live scores and clock
+- Play-by-play events
+- Player statistics
+- Real-time updates via WebSocket
+
+## API Integration
+
+The app communicates with the NBA API service through REST endpoints:
+
+- `GET /api/schedules/{date}` - Get games for a specific date
+- `GET /api/games/{gameId}` - Get game metadata
+- `GET /api/games/{gameId}/summary` - Get game summary
+- `GET /api/games/{gameId}/pbp` - Get play-by-play events
+
+## WebSocket Integration
+
+Real-time updates are received via WebSocket connection:
+
+**Client Messages:**
+- `{ type: 'subscribe', gameId: string }` - Subscribe to a specific game
+- `{ type: 'subscribe', all: true }` - Subscribe to all games
+- `{ type: 'unsubscribe', gameId: string }` - Unsubscribe from a game
+- `{ type: 'unsubscribe', all: true }` - Unsubscribe from all games
+
+**Server Messages:**
+- `{ type: 'gameUpdate', gameId, eventType, payload, timestamp }` - Game update event
+- `{ type: 'subscribed' | 'unsubscribed', gameId }` - Subscription confirmation
+- `{ type: 'error', error: string }` - Error message
+
+## Date Navigation
+
+The home page supports flexible date input:
+- Specific dates: `YYYY-MM-DD` format
+- Relative dates: `today`, `yesterday`, `tomorrow`
+- URL parameter: `?date=2024-01-15` or `?date=today`
+
+## Building for Production
+
+```bash
+pnpm build
+pnpm start
+```
+
+## Related Projects
+
+- [nba-api-service](../nba-api-service/) - REST API and WebSocket server
+- [nba-realtime-service](../nba-realtime-service/) - Real-time data polling and processing
+
+## License
+
+Private project - see repository for details.
