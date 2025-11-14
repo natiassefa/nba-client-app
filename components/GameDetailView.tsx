@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { TeamLogo } from './TeamLogo';
 import { PlayerStats } from './PlayerStats';
 import { useGameUpdates } from '@/hooks/useGameUpdates';
-import { getPlayByPlay } from '@/lib/api';
 import { getTeamAlias } from '@/lib/teams';
 import { format } from 'date-fns';
 import type { GameMetadata, GameSummary, PlayByPlay } from '@/types/api';
